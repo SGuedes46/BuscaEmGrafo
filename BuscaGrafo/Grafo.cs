@@ -91,15 +91,14 @@ namespace BuscaGrafo
                 v.TempoDescoberta = 0;
             }
 
-            int td;   
+            int td = 0;   
             var vertice = _vertices[nome];
-            Console.Write("Fila: ");
+            Console.Write("\nFila: ");
             while (vertice != null)
             {
 
-                td = 1;
                 vertice.Status = Status.Visitado;
-                vertice.TempoDescoberta = td;
+                vertice.TempoDescoberta = ++td;
                 vertice.Nivel = 0;
 
                 var fila = new Queue<Vertice>();
