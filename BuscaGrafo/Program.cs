@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace BuscaGrafo
 {
@@ -76,8 +75,8 @@ namespace BuscaGrafo
             grafo.AdicionarAresta("A", "B");
             grafo.AdicionarAresta("C", "D");
             grafo.AdicionarAresta("B", "C");
-            
-            
+
+
 
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Blue;
@@ -85,6 +84,8 @@ namespace BuscaGrafo
             Console.ForegroundColor = ConsoleColor.White;
 
             grafo.BuscaProfundidade();
+
+            
 
             Console.WriteLine("\n\n|Vertice|TD\t|TT\t|Pai");
             foreach (var vertice in grafo.Vertices)
@@ -104,12 +105,12 @@ namespace BuscaGrafo
             }
 
             Console.ReadKey();
-            
+
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("=====Busca em Largura=====");
             Console.ForegroundColor = ConsoleColor.White;
-            
+
             Console.WriteLine("Por qual vertice quer iniciar a busca? ");
 
 
@@ -123,7 +124,12 @@ namespace BuscaGrafo
                     Console.ForegroundColor = ConsoleColor.Blue;
                     Console.WriteLine("=====Busca em Largura=====");
                     Console.ForegroundColor = ConsoleColor.White;
+                    var watch = new System.Diagnostics.Stopwatch();
+                    watch.Start();
                     grafo.BuscaEmLargura(verticeInicial);
+                    watch.Stop();
+                    Console.WriteLine($"Execution Time: {watch.ElapsedMilliseconds} ms");
+
                     break;
                 }
                 catch (Exception)

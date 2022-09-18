@@ -91,7 +91,7 @@ namespace BuscaGrafo
                 v.TempoDescoberta = 0;
             }
 
-            int td = 0;   
+            int td = 0;
             var vertice = _vertices[nome];
             Console.Write("\nFila: ");
             while (vertice != null)
@@ -128,8 +128,6 @@ namespace BuscaGrafo
                 if (vertice != null)
                     Console.Write(",");
             }
-
-
         }
 
         public IEnumerable<Vertice> Vertices
