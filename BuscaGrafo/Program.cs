@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace BuscaGrafo
 {
@@ -13,68 +14,23 @@ namespace BuscaGrafo
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("=====Informe as propriedades do Grafo=====");
             Console.ForegroundColor = ConsoleColor.White;
-            //Console.WriteLine("Quantos Vertices tem o grafo? ");
-            //int qtdVertices = int.Parse(Console.ReadLine());
-            //Console.WriteLine("Quantas Arestas tem o grafo? ");
-            //int qtdArestas = int.Parse(Console.ReadLine());
-            Console.WriteLine("O grafo é direcionado? (S/N) ");
-            var res = Console.ReadLine();
-            if (res == "S" || res == "s")
-                grafo.grafoDirecionado = true;
-            else
-                grafo.grafoDirecionado = false;
 
-            //Console.Clear();
-            //Console.ForegroundColor = ConsoleColor.Yellow;
-            //Console.WriteLine("=====Informe os Vertices=====");
-            //Console.ForegroundColor = ConsoleColor.White;
-
-            //for (int i = 0; i < qtdVertices; i++)
-            //{
-            //    Console.WriteLine("Informe o nome do {0}º vértice: ", i + 1); ;
-            //    string nomeVertice = Console.ReadLine();
-            //    try { grafo.AdicionarVertice(nomeVertice); }
-            //    catch (Exception e)
-            //    {
-            //        Console.ForegroundColor = ConsoleColor.Red;
-            //        Console.WriteLine(e.Message);
-            //        Console.ForegroundColor = ConsoleColor.White;
-            //        i--;
-            //    }
-            //}
-
-            //Console.Clear();
-            //Console.ForegroundColor = ConsoleColor.Yellow;
-            //Console.WriteLine("=====Informe as Arestas=====");
-            //Console.ForegroundColor = ConsoleColor.White;
-
-            //for (int i = 0; i < qtdArestas; i++)
-            //{
-            //    Console.WriteLine("Informe a {0}º aresta usando um espaço entre origem e destino ex: (A B): ", i + 1);
-            //    string[] aresta = Console.ReadLine().Split(' ');
-            //    string origem = aresta[0];
-            //    string destino = aresta[1];
-            //    try { grafo.AdicionarAresta(origem, destino); }
-            //    catch (Exception e)
-            //    {
-            //        Console.ForegroundColor = ConsoleColor.Red;
-            //        Console.WriteLine(e.Message);
-            //        Console.ForegroundColor = ConsoleColor.White;
-            //        i--;
-            //    }
-            //}
+            grafo.grafoDirecionado = false;
 
 
+            string caminho = @"C:\Development\Grafo.txt";
+            if (caminho == null)
+            {
+                Console.WriteLine("Informe o caminho do arquivo");
+                caminho = Console.ReadLine();
+            }
 
-            grafo.AdicionarVertice("A");
-            grafo.AdicionarVertice("B");
-            grafo.AdicionarVertice("C");
-            grafo.AdicionarVertice("D");
-            grafo.AdicionarVertice("E");
-
-            grafo.AdicionarAresta("A", "B");
-            grafo.AdicionarAresta("C", "D");
-            grafo.AdicionarAresta("B", "C");
+            string[] lines = File.ReadAllLines(caminho);
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string[] linha = lines[i].Split(',');
+                grafo.AdicionarAresta(linha[0], linha[1]);
+            }
 
 
 
@@ -85,51 +41,84 @@ namespace BuscaGrafo
 
             grafo.BuscaProfundidade();
 
-            
+            string fileName = @"C:\Development\TabelaTempo.html";
+            string fileName2 = @"C:\Development\TabelaTempo.txt";
+            string fName = @"C:\Development\ListaVertices.html";
+            string fName2 = @"C:\Development\ListaVertices.txt";
+            string sName = @"C:\Development\ArvoreBusca.html";
+            string sName2 = @"C:\Development\ArvoreBusca.txt";
 
-            Console.WriteLine("\n\n|Vertice|TD\t|TT\t|Pai");
-            foreach (var vertice in grafo.Vertices)
+            try
             {
-                Console.WriteLine("|   {0}\t|{1}\t|{2}\t|{3}", vertice.Nome, vertice.TempoDescoberta, vertice.TempoTermino, vertice?.Pai?.Nome);
-            }
-
-            foreach (var vertice in grafo.Vertices)
-            {
-                Console.Write("\nVertice: {0}", vertice.Nome + " => ");
-                Console.Write("Aresta: (");
-                foreach (var aresta in vertice.Arestas)
+                if (File.Exists(fileName))
                 {
-                    Console.Write(" {0}", aresta.Destino.Nome);
+                    File.Delete(fileName);
                 }
-                Console.WriteLine(" )");
+
+                using (StreamWriter sw = File.CreateText(fileName))
+                using (StreamWriter sw2 = File.CreateText(fileName2))
+                using (StreamWriter fw = File.CreateText(fName))
+                using (StreamWriter fw2 = File.CreateText(fName2))
+                {
+                    sw.WriteLine("<h1 align='center'>=====Busca em Profundidade=====</h1>");
+                    sw2.WriteLine("=====Busca em Profundidade=====");
+                    Console.WriteLine("\n\n|Vertice|TD\t|TT\t|Pai");
+                    sw2.WriteLine("\n\n|Vertice|TD\t|TT\t|Pai");
+                    sw.WriteLine("<p><table border = 1 align='center'><tr><td><h3><b>Vertice</b></h3></td><td><h3><b>TD</b></h3></td><td><h3><b>TT</b></h3></td><td><b><h3><h3><b>Pai</b></h3></td></tr>");
+                    foreach (var vertice in grafo.Vertices)
+                    {
+                        Console.WriteLine("|   {0}\t|{1}\t|{2}\t|{3}", vertice.Nome, vertice.TempoDescoberta, vertice.TempoTermino, vertice?.Pai?.Nome);
+                        sw2.WriteLine("|   {0}\t|{1}\t|{2}\t|{3}", vertice.Nome, vertice.TempoDescoberta, vertice.TempoTermino, vertice?.Pai?.Nome);
+                        sw.WriteLine("<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>", vertice.Nome, vertice.TempoDescoberta, vertice.TempoTermino, vertice?.Pai?.Nome);
+                    }
+                    sw.WriteLine("</table></p>");
+                    fw.WriteLine("<h1 align='center'>=====Lista Vertices Visitados=====</h1>");
+                    fw2.WriteLine("=====Lista Vertices Visitados=====");
+                    fw.Write("<span align='center'>");
+                    foreach (var vertice in grafo.Vertices)
+                    {
+                        Console.Write("BP(" + vertice.Nome + ") => (" + vertice.Nome + ") = {");
+                        fw2.Write("BP(" + vertice.Nome + ") => ɽ(" + vertice.Nome + ") = {");
+                        fw.Write("<p>BP(" + vertice.Nome + ") => ɽ(" + vertice.Nome + ") = {");
+                        foreach (var aresta in vertice.Arestas)
+                        {
+                            Console.Write("  {0}", aresta.Destino.Nome);
+                            fw2.Write("  {0}", aresta.Destino.Nome);
+                            fw.Write("  {0}", aresta.Destino.Nome);
+                        }
+                        Console.WriteLine(" }");
+                        fw2.WriteLine(" }");
+                        fw.WriteLine(" }</p>");
+                    }
+                    fw.Write("</span>");
+
+                    sw.Close();
+                    sw2.Close();
+                    fw2.Close();
+                    fw.Close();
+                }
+            }
+            catch (Exception Ex)
+            {
+                Console.WriteLine(Ex.ToString());
             }
 
-            Console.ReadKey();
 
-            Console.Clear();
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("=====Busca em Largura=====");
+            Console.WriteLine("\n\n\n=====Busca em Largura=====");
             Console.ForegroundColor = ConsoleColor.White;
 
             Console.WriteLine("Por qual vertice quer iniciar a busca? ");
-
-
-
+            string ret = "";
             while (true)
             {
                 string verticeInicial = Console.ReadLine();
                 try
                 {
-                    Console.Clear();
                     Console.ForegroundColor = ConsoleColor.Blue;
-                    Console.WriteLine("=====Busca em Largura=====");
+                    Console.WriteLine("\n\n\n=====Busca em Largura=====");
                     Console.ForegroundColor = ConsoleColor.White;
-                    var watch = new System.Diagnostics.Stopwatch();
-                    watch.Start();
-                    grafo.BuscaEmLargura(verticeInicial);
-                    watch.Stop();
-                    Console.WriteLine($"Execution Time: {watch.ElapsedMilliseconds} ms");
-
+                    ret = grafo.BuscaEmLargura(verticeInicial);
                     break;
                 }
                 catch (Exception)
@@ -141,21 +130,36 @@ namespace BuscaGrafo
                 }
             }
 
-            Console.WriteLine("\n\n|Vertice|Nivel\t|Largura|Pai");
-            foreach (var vertice in grafo.Vertices)
+            try
             {
-                Console.WriteLine("|   {0}\t|{1}\t|{2}\t|{3}", vertice.Nome, vertice.Nivel, vertice.TempoDescoberta, vertice?.Pai?.Nome);
-            }
-
-            foreach (var vertice in grafo.Vertices)
-            {
-                Console.Write("\nVertice: {0}", vertice.Nome + " => ");
-                Console.Write("Aresta: (");
-                foreach (var aresta in vertice.Arestas)
+                if (File.Exists(sName))
                 {
-                    Console.Write(" {0}", aresta.Destino.Nome);
+                    File.Delete(sName);
                 }
-                Console.WriteLine(" )");
+
+                // Create a new file     
+                using (StreamWriter sw = File.CreateText(sName))
+                using (StreamWriter sw2 = File.CreateText(sName2))
+                {
+                    sw.WriteLine("<h1 align='center'>=====Busca em Largura=====</h1>");
+                    sw.WriteLine("<p><table border = 1 align='center'><tr><td><h3><b>Vertice</b></h3></td><td><h3><b>Nivel</b></h3></td><td><h3><b>Largura</b></h3></td><td><b><h3><h3><b>Pai</b></h3></td></tr>");
+                    sw2.WriteLine("=====Busca em Largura=====");
+                    Console.WriteLine("\n\n{0}", ret);
+                    sw2.WriteLine("\n\n{0}", ret);
+                    sw.WriteLine("<p><p>{0}</p></p>", ret);
+                    Console.WriteLine("\n\n|Vertice|Nivel\t|Largura|Pai");
+                    foreach (var vertice in grafo.Vertices)
+                    {
+                        Console.WriteLine("|   {0}\t|{1}\t|{2}\t|{3}", vertice.Nome, vertice.Nivel, vertice.TempoDescoberta, vertice?.Pai?.Nome);
+                        sw2.WriteLine("|   {0}\t|{1}\t|{2}\t|{3}", vertice.Nome, vertice.Nivel, vertice.TempoDescoberta, vertice?.Pai?.Nome);
+                        sw.WriteLine("<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>", vertice.Nome, vertice.Nivel, vertice.TempoDescoberta, vertice?.Pai?.Nome);
+                    }
+                    sw.WriteLine("</table></p>");
+                }
+            }
+            catch (Exception Ex)
+            {
+                Console.WriteLine(Ex.ToString());
             }
 
             Console.ReadKey();

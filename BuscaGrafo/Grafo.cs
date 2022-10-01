@@ -20,27 +20,17 @@ namespace BuscaGrafo
         public void AdicionarAresta(string origem, string destino)
         {
             if (!_vertices.ContainsKey(origem))
-            {
-                throw new Exception("Vertice de origem não existe");
-            }
+                AdicionarVertice(origem);
+
+            if (!_vertices.ContainsKey(destino))
+                AdicionarVertice(destino);
+
+            if (grafoDirecionado)
+                _vertices[origem].AdicionarAresta(_vertices[destino]);
             else
             {
-                if (!_vertices.ContainsKey(destino))
-
-                {
-
-                    throw new Exception("Vertice de destino não existe");
-                }
-                else
-                {
-                    if (grafoDirecionado)
-                        _vertices[origem].AdicionarAresta(_vertices[destino]);
-                    else
-                    {
-                        _vertices[origem].AdicionarAresta(_vertices[destino]);
-                        _vertices[destino].AdicionarAresta(_vertices[origem]);
-                    }
-                }
+                _vertices[origem].AdicionarAresta(_vertices[destino]);
+                _vertices[destino].AdicionarAresta(_vertices[origem]);
             }
         }
 
@@ -81,8 +71,9 @@ namespace BuscaGrafo
             return tempo;
         }
 
-        public void BuscaEmLargura(string nome)
+        public string BuscaEmLargura(string nome)
         {
+            string filaRet = "";
             foreach (var v in _vertices.Values)
             {
                 v.Status = Status.NaoVisitado;
@@ -93,7 +84,7 @@ namespace BuscaGrafo
 
             int td = 0;
             var vertice = _vertices[nome];
-            Console.Write("\nFila: ");
+            filaRet = "Fila: ";
             while (vertice != null)
             {
 
@@ -103,7 +94,7 @@ namespace BuscaGrafo
 
                 var fila = new Queue<Vertice>();
 
-                Console.Write(" {0}", vertice.Nome);
+                filaRet = filaRet + " " + vertice.Nome;
                 fila.Enqueue(vertice);
 
                 while (fila.Count > 0)
@@ -117,7 +108,7 @@ namespace BuscaGrafo
                             aresta.Destino.TempoDescoberta = ++td;
                             aresta.Destino.Nivel = v.Nivel + 1;
                             aresta.Destino.Pai = v;
-                            Console.Write(", {0}", aresta.Destino.Nome);
+                            filaRet = filaRet + ", " + aresta.Destino.Nome;
                             fila.Enqueue(aresta.Destino);
                         }
                     }
@@ -126,8 +117,9 @@ namespace BuscaGrafo
                 }
                 vertice = _vertices.Values.FirstOrDefault(v => v.Status == Status.NaoVisitado);
                 if (vertice != null)
-                    Console.Write(",");
+                    filaRet = filaRet + ",";
             }
+            return filaRet;
         }
 
         public IEnumerable<Vertice> Vertices
