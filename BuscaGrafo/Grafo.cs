@@ -46,11 +46,11 @@ namespace BuscaGrafo
             foreach (var vertice in _vertices.Values)
             {
                 if (vertice.Status == Status.NaoVisitado)
-                    tempo = BuscaProfundidadeVisit(vertice, tempo);
+                    tempo = FazerBuscaProfundidade(vertice, tempo);
             }
         }
 
-        private int BuscaProfundidadeVisit(Vertice vertice, int tempo)
+        private int FazerBuscaProfundidade(Vertice vertice, int tempo)
         {
             tempo++;
             vertice.TempoDescoberta = tempo;
@@ -61,7 +61,7 @@ namespace BuscaGrafo
                 if (aresta.Destino.Status == Status.NaoVisitado)
                 {
                     aresta.Destino.Pai = vertice;
-                    tempo = BuscaProfundidadeVisit(aresta.Destino, tempo);
+                    tempo = FazerBuscaProfundidade(aresta.Destino, tempo);
                 }
             }
 
